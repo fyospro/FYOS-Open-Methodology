@@ -19,12 +19,12 @@ gross_apr = funding_rate × 3 × 365 = funding_rate × 1095
 
 **Problem**: This assumes you can enter and exit positions for free, that the rate persists indefinitely, and that your prediction of the rate is perfectly accurate.
 
-### 2. Net APR
+### 2. Fee-Adjusted APR
 
 After accounting for trading costs:
 
 ```
-net_apr = gross_apr - (entry_fee + exit_fee) × annualization_factor
+fee_adjusted_apr = gross_apr - (entry_fee + exit_fee) × annualization_factor
 ```
 
 Where fees are expressed as basis points (bps) of position notional.
@@ -34,57 +34,61 @@ Where fees are expressed as basis points (bps) of position notional.
 fee_drag_apr = 0.001 × (365 / 1) = 36.5%
 ```
 
-A 40% gross APR becomes ~3.5% net on a single day.
+A 40% gross APR becomes ~3.5% fee-adjusted on a single day.
 
 For longer holds, fee drag decreases:
 ```
 fee_drag_apr = 0.001 × (365 / holding_days)
 ```
 
-### 3. Expected Realized APR
+### 3. Decay-Adjusted APR
 
-Adjusts for the probability that the rate will persist:
+Adjusts for deterministic rate compression over time:
 
 ```
-expected_apr = net_apr × survivability_score
+decay_adjusted_apr = fee_adjusted_apr × decay_factor
 ```
 
-Where `survivability_score` (0 to 1) combines:
-- **Persistence score**: Historical autocorrelation of rates
+Where `decay_factor` (0 to 1) is derived from:
+- **Half-life model**: How quickly rates compress toward equilibrium
 - **Reality gap penalty**: Divergence from long-term averages
 
-A market with low persistence (rates flip frequently) or high reality gap (current rate far from historical norm) receives a lower survivability score.
+A market with short half-life (rates compress quickly) or high reality gap (current rate far from historical norm) receives a lower decay factor.
 
-### 4. Adjusted APR (Trust-Haircut)
+See: [Deterministic Decay](05-deterministic-decay.md)
+
+### 4. Model-Adjusted APR (Trust-Haircut)
 
 Incorporates empirical forecast error:
 
 ```
-adjusted_apr = expected_apr × (1 - haircut_pct)
+model_adjusted_apr = decay_adjusted_apr × (1 - haircut_pct)
 ```
 
-The haircut is derived from the p75 absolute prediction error for that market segment. If past predictions for similar opportunities were off by 8% at the 75th percentile, the adjusted APR reflects that uncertainty.
+The haircut is derived from the p75 absolute prediction error for that market segment. If past predictions for similar opportunities were off by 8% at the 75th percentile, the model-adjusted APR reflects that uncertainty.
+
+**This is the primary FYOS metric.**
 
 ## Why This Matters
 
-| Scenario | Gross APR | Net APR | Expected APR | Adjusted APR |
-|----------|-----------|---------|--------------|--------------|
+| Scenario | Gross APR | Fee-Adj | Decay-Adj | Model-Adj |
+|----------|-----------|---------|-----------|-----------|
 | Stable high-yield | 50% | 45% | 38% | 35% |
 | Volatile spike | 120% | 115% | 46% | 38% |
 | Low-persistence | 25% | 20% | 8% | 6% |
 
-The first two scenarios have similar adjusted yields despite 70%+ difference in gross rates. The "spike" scenario is heavily penalized by survivability.
+The first two scenarios have similar model-adjusted yields despite 70%+ difference in gross rates. The "spike" scenario is heavily penalized by decay adjustment.
 
 ## Conservative Factor
 
-For display purposes, FYOS also computes a **conservative APR**:
+For some display contexts, FYOS computes a **conservative floor**:
 
 ```
-conservative_factor = 0.5 + (survivability_score × 0.5)
-conservative_apr = expected_apr × conservative_factor
+conservative_factor = 0.5 + (decay_factor × 0.5)
+conservative_apr = decay_adjusted_apr × conservative_factor
 ```
 
-This provides a floor that's always at least 50% of expected APR, avoiding excessive pessimism when survivability is very low.
+This provides a floor that's always at least 50% of decay-adjusted APR, avoiding excessive pessimism when decay factors are very low.
 
 ## Design Principle
 

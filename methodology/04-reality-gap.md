@@ -36,7 +36,7 @@ FYOS uses context-appropriate windows, typically 90-180 days for mature markets.
 
 ## Gap Penalty
 
-The reality gap feeds into survivability calculation:
+The reality gap feeds into the decay factor calculation:
 
 ```
 normalized_gap = min(|reality_gap| / 0.05, 1)

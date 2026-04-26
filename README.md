@@ -38,25 +38,28 @@ Every metric FYOS produces carries explicit uncertainty disclosure:
 | [Funding Persistence](methodology/02-funding-persistence.md) | Measuring regime stability |
 | [Mirage Detection](methodology/03-mirage-detection.md) | Identifying unsustainable rates |
 | [Reality Gap](methodology/04-reality-gap.md) | Historical vs. recent rate divergence |
-| [Survivability](methodology/05-survivability.md) | Probability of edge persisting |
+| [Deterministic Decay](methodology/05-deterministic-decay.md) | How rates compress over time and what persists |
 | [Trust Grading](methodology/06-trust-grading.md) | Empirical reliability calibration |
 | [Capacity Modeling](methodology/07-capacity-modeling.md) | Position size constraints |
 | [Edge Value](methodology/08-edge-value.md) | Holistic opportunity scoring |
 | [Reality Engine](methodology/09-reality-engine.md) | Closed-loop validation |
 | [Planner Logic](methodology/10-planner-logic.md) | Portfolio construction principles |
+| [Basis / Cash & Carry](methodology/11-basis-cash-and-carry.md) | Delivery futures basis trading methodology |
 
 ## Key Concepts
 
 ### APR Tiers
 
 ```
-Gross APR       Raw annualized funding rate (what exchanges show)
+Gross APR            Raw annualized funding rate (what exchanges show)
     ↓
-Net APR         After round-trip trading fees
+Fee-Adjusted APR     After round-trip trading fees (both legs)
     ↓
-Expected APR    After survivability adjustment (rate persistence)
+Decay-Adjusted APR   After deterministic decay adjustment
+                     (rates compress as capital crowds in)
     ↓
-Adjusted APR    After trust haircut (empirical forecast error)
+Model-Adjusted APR   After trust haircut based on empirical forecast error
+                     This is the primary FYOS metric
 ```
 
 ### Trust Grading
@@ -94,8 +97,23 @@ Position sizing recommendations based on liquidity impact:
 ## Related Resources
 
 - [FYOS Platform](https://fyos.pro)
-- [Reality Engine](https://fyos.pro/reality) — Live validation dashboard
-- [Documentation](https://fyos.pro/docs)
+- [Reality Engine](https://fyos.pro/reality) — Live validation metrics
+- [Methodology Docs](https://docs.fyos.pro/methodology) — Full documentation
+- [Basis / C&C Docs](https://docs.fyos.pro/basis) — Cash & Carry methodology
+
+## Methodology Changelog
+
+### 2026-04-21 — Interval calculation fix
+
+Discovered Binance snapshot cadence (1h) was mistaken for funding interval (8h), inflating APR 8x. Fixed by always trusting exchange metadata over observed snapshot frequency.
+
+### 2026-04 — Survivability deprecated
+
+Survivability model replaced by deterministic decay. Rationale: survivability implied a probability guarantee that the model could not support empirically. Canonical replacement: decay-adjusted return.
+
+### 2026-04 — Basis / Cash & Carry added
+
+Second strategy family added covering delivery futures basis trading. Primary metric: model_adjusted_basis_apr.
 
 ## License
 

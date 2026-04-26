@@ -39,17 +39,17 @@ FYOS produces a **mirage signal** (high/medium/low) indicating the likelihood th
 
 ```
 gap_penalty = 1 - min(|reality_gap| / 0.05, 1)
-survivability_score = persistence_score × gap_penalty
+decay_factor = persistence_score × gap_penalty
 ```
 
 Where:
 - `reality_gap` = current rate - historical average rate
 - `0.05` = threshold for full penalty (5% gap)
 
-The survivability score is then mapped:
+The decay factor is then mapped to mirage signal:
 
-| Survivability Score | Mirage Signal |
-|--------------------|---------------|
+| Decay Factor | Mirage Signal |
+|--------------|---------------|
 | ≥ 0.75 | Low |
 | ≥ 0.40 | Medium |
 | < 0.40 | High |
@@ -74,7 +74,7 @@ The difference between a mirage and a genuine opportunity:
 ## Conservative Handling
 
 When mirage risk is high, FYOS:
-1. Applies aggressive survivability penalty
+1. Applies aggressive decay penalty
 2. Displays prominent warnings
 3. Excludes from planner recommendations (if trust threshold enabled)
 
@@ -84,7 +84,7 @@ Users can still view high-mirage opportunities but receive clear indication that
 
 The Reality Engine tracks mirage predictions:
 
-- **Underpenalty**: Predicted survivable, actually collapsed
+- **Underpenalty**: Predicted stable, actually collapsed
 - **Overpenalty**: Predicted mirage, actually persisted
 
 This feedback refines mirage detection thresholds over time.

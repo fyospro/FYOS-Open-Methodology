@@ -1,11 +1,11 @@
 # Edge Value
 
-Edge Value is a composite score that ranks opportunities by their expected risk-adjusted return, incorporating yield, survivability, trust, and capacity.
+Edge Value is a composite score that ranks opportunities by their expected risk-adjusted return, incorporating yield, decay adjustment, trust, and capacity.
 
 ## The Ranking Problem
 
 Raw APR is insufficient for ranking:
-- 80% APR with 0.2 survivability < 30% APR with 0.9 survivability
+- 80% APR with 0.2 decay factor < 30% APR with 0.9 decay factor
 - 40% APR on $10K capacity < 25% APR on $1M capacity
 - High yield with grade D trust < moderate yield with grade A
 
@@ -14,15 +14,15 @@ Edge Value synthesizes these factors into a single comparable metric.
 ## Calculation Framework
 
 ```
-edge_value = adjusted_apr × capacity_factor × quality_bonus
+edge_value = model_adjusted_apr × capacity_factor × quality_bonus
 ```
 
-### Component 1: Adjusted APR
+### Component 1: Model-Adjusted APR
 
 The trust-haircut-adjusted yield (see [APR Progression](01-apr-progression.md)):
 
 ```
-adjusted_apr = net_apr × survivability × (1 - haircut)
+model_adjusted_apr = fee_adjusted_apr × decay_factor × (1 - haircut)
 ```
 
 ### Component 2: Capacity Factor
@@ -92,8 +92,8 @@ Edge value is a convenience metric for ranking, not a replacement for examining 
 ## Transparency
 
 FYOS exposes all edge value components:
-- Adjusted APR
-- Survivability score
+- Model-adjusted APR
+- Decay factor
 - Trust grade
 - Capacity bucket
 

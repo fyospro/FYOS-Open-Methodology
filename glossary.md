@@ -4,13 +4,17 @@ Key terms used throughout FYOS methodology documentation.
 
 ---
 
-### Adjusted APR
+### Basis
 
-The final yield estimate after all deductions (fees, survivability, trust haircut). Represents the conservative expected return.
+The price difference between spot and delivery futures. Positive basis means futures trade at a premium to spot.
 
 ### Capacity
 
 The position size at which an opportunity remains profitable. Beyond capacity, execution costs erode the edge.
+
+### Cash & Carry (C&C)
+
+A strategy involving long spot and short delivery futures to capture basis premium at contract expiry.
 
 ### Cold Start
 
@@ -18,11 +22,19 @@ The state when insufficient historical data exists to compute empirical trust gr
 
 ### Conservative APR
 
-A floor estimate that's always at least 50% of expected APR, preventing excessive pessimism.
+A floor estimate that's always at least 50% of decay-adjusted APR, preventing excessive pessimism.
 
-### Degradation Factor
+### Decay-Adjusted APR
 
-The fraction of gross yield lost due to survivability concerns. `degradation_factor = 1 - survivability_score`.
+Fee-adjusted APR multiplied by the decay factor. Represents expected yield after accounting for rate compression.
+
+### Decay Factor
+
+A value (0-1) quantifying expected rate retention over a holding period. Derived from half-life and reality gap.
+
+### Deterministic Decay
+
+The FYOS model for funding rate compression. Rates decay predictably rather than probabilistically. Replaces the deprecated "survivability" concept.
 
 ### Directional Accuracy
 
@@ -30,11 +42,11 @@ The percentage of predictions where the predicted direction (positive/negative f
 
 ### Edge Value
 
-A composite score combining adjusted APR, capacity, and trust quality for ranking opportunities.
+A composite score combining model-adjusted APR, capacity, and trust quality for ranking opportunities.
 
-### Expected Realized APR
+### Fee-Adjusted APR
 
-Net APR adjusted for survivability. Represents yield expectation before trust haircut.
+Gross APR minus trading fees. The yield after execution costs but before decay and trust adjustments.
 
 ### Funding Rate
 
@@ -50,7 +62,7 @@ Raw annualized funding rate without any adjustments. What exchanges typically di
 
 ### Haircut
 
-The percentage deducted from expected APR to account for forecast uncertainty.
+The percentage deducted from decay-adjusted APR to account for forecast uncertainty.
 
 ### Half-Life
 
@@ -62,11 +74,11 @@ A funding rate opportunity that appears attractive but cannot be profitably capt
 
 ### Mirage Signal
 
-A qualitative indicator (high/medium/low) of mirage risk based on survivability score.
+A qualitative indicator (high/medium/low) of mirage risk based on decay factor.
 
-### Net APR
+### Model-Adjusted APR
 
-Gross APR minus trading fees. The yield after execution costs but before survivability and trust adjustments.
+The primary FYOS metric. Decay-adjusted APR after trust haircut. Represents the conservative expected return.
 
 ### p75 Error
 
@@ -74,7 +86,7 @@ The 75th percentile of absolute prediction errors. Used for trust grade threshol
 
 ### Persistence Score
 
-A measure (0-1) of how likely a funding rate is to persist over a holding period. Derived from half-life.
+A measure (0-1) of how quickly funding rates compress. Derived from half-life.
 
 ### Reality Engine
 
@@ -108,13 +120,9 @@ When a funding rate changes direction (positive → negative or vice versa).
 
 The position size where edge begins degrading. A conservative limit for position sizing.
 
-### Survivability
+### Survivability (Deprecated)
 
-The probability that a funding opportunity will persist long enough to be profitably captured.
-
-### Survivability Score
-
-A numeric value (0-1) combining persistence and reality gap factors.
+Former FYOS concept for rate persistence probability. Replaced by deterministic decay modeling. See [Deterministic Decay](methodology/05-deterministic-decay.md).
 
 ### Trust Grade
 
@@ -122,7 +130,7 @@ See Reliability Grade.
 
 ### Trust Haircut
 
-The percentage deducted from expected APR based on empirical forecast error.
+The percentage deducted from decay-adjusted APR based on empirical forecast error.
 
 ### Trust Quality
 

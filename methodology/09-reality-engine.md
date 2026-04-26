@@ -21,11 +21,11 @@ This creates a feedback loop where inaccurate predictions are penalized and accu
 - **Realized**: Actual funding received
 - **Error**: |predicted - realized|
 
-### 2. Survivability Predictions
+### 2. Decay Predictions
 
-- **Predicted**: Survivability score (0-1)
-- **Realized**: Did the rate survive? (binary)
-- **Metric**: Survivability rate (% that survived as predicted)
+- **Predicted**: Decay factor (0-1)
+- **Realized**: Actual rate retention
+- **Metric**: Decay accuracy rate
 
 ### 3. Half-Life Predictions
 
@@ -72,7 +72,7 @@ The Reality Engine exposes aggregate metrics publicly:
 | p90 Error | 90th percentile error |
 | Directional Accuracy | % where predicted direction matched |
 | Sign Flip Rate | % where direction reversed |
-| Survivability Rate | % where rate survived as predicted |
+| Decay Accuracy | % where decay predictions were accurate |
 
 These metrics are displayed on the public Reality page with full transparency.
 
